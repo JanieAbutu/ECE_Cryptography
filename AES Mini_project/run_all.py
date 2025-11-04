@@ -5,7 +5,7 @@ import hashlib
 sys.path.append(os.path.dirname(__file__))
 
 from aes_utils import key_expansion, hamming_distance
-from aes import aes_encrypt_block, aes_decrypt_block
+from aes_encrypt_dcrypt import aes_encrypt_block, aes_decrypt_block
 
 # ------------------------------
 # Helper functions
@@ -92,10 +92,23 @@ if __name__ == "__main__":
     print("Ciphertext (bytes): ", ciphertext)
     print("Decrypted Text:     ", decrypted_text)
 
-    # Avalanche test for all blocks
-    print("\n=== Avalanche Test per 16-byte block ===")
+        # ------------------------------
+    # Avalanche test per block (detailed)
+    # ------------------------------
+    print("\n=== Detailed Avalanche Test per 16-byte block ===")
     for i in range(0, len(padded_plaintext), 16):
         block = padded_plaintext[i:i+16]
-        modified_block = block[:15] + [block[15] ^ 0x01]
-        cipher_mod = aes_encrypt_block(modified_block, round_keys)
-        print(f"Block {i//16 + 1} Hamming distance: {hamming_distance(ciphertext[i:i+16], cipher_mod)}")
+        modified_block = block[:15] + [block[15] ^ 0x01]  # flip last bit of last byte
+        
+        cipher_original = aes_encrypt_block(block, round_keys)
+        cipher_modified = aes_encrypt_block(modified_block, round_keys)
+        
+        distance = hamming_distance(cipher_original, cipher_modified)
+        
+        print(f"\nBlock {i//16 + 1}:")
+        print(" Original Block:       ", block)
+        print(" Modified Block:       ", modified_block)
+        print(" Ciphertext Original:  ", cipher_original)
+        print(" Ciphertext Modified:  ", cipher_modified)
+        print(" Hamming Distance:     ", distance)
+   
