@@ -78,7 +78,14 @@ if __name__ == "__main__":
 
     print("Encrypting all blocks...")
 
-    # Encrypt all blocks
+    #Encrypt block by block
+    ciphertext_blocks = []
+    for i in range(0, len(padded_plaintext), 16):
+        block = padded_plaintext[i:i+16]
+        enc_block = aes_encrypt_block(block, round_keys)
+        ciphertext_blocks.append(enc_block)
+
+    # Encrypt all blocks at once
     ciphertext = []
     for i in range(0, len(padded_plaintext), 16):
         block = padded_plaintext[i:i+16]
@@ -88,6 +95,13 @@ if __name__ == "__main__":
 
     # Display Encryption output
     print("\nENCRYPTION OUTPUT:")
+
+    # Display ciphertext per block
+    print("\nCiphertext Blocks:")
+    for i, blk in enumerate(ciphertext_blocks, 1):
+        print(f"   Block {i} (bytes): {blk}")
+        print(f"   Block {i} (hex)  : {bytes_to_hex(blk)}\n")
+
     #print("Original Plaintext: ", plaintext_input)
     print("    Ciphertext (bytes): ", ciphertext)
     print("    Ciphertext (hex):   ", bytes_to_hex(ciphertext))
@@ -98,8 +112,24 @@ if __name__ == "__main__":
 
     print("Starting Decryption...")
 
+    # ------------------------------
+    # Decrypt block by block
+    # ------------------------------
+    #decrypted_bytes = []
+    #for blk in ciphertext_blocks:
+      #  decrypted_bytes.extend(aes_decrypt_block(blk, round_keys))
 
-    # Decrypt all blocks
+    # Remove padding
+    #decrypted_bytes = pkcs7_unpad(decrypted_bytes)
+    #try:
+     #   decrypted_text = bytes(decrypted_bytes).decode('utf-8')
+    #except UnicodeDecodeError:
+     #   decrypted_text = str(decrypted_bytes)
+
+    #print("\nDecrypted Text: ", decrypted_text)
+
+
+    # Decrypt all blocks at once
     decrypted_bytes = []
     for i in range(0, len(ciphertext), 16):
         block = ciphertext[i:i+16]
@@ -113,7 +143,7 @@ if __name__ == "__main__":
         decrypted_text = str(decrypted_bytes)  # fallback to byte list
 
     
-    print("--- Decryption Completed ---")
+    print("\n--- Decryption Completed ---")
     print("\nDECRYPTION OUTPUT:")
     print("    Decrypted Text:     ", decrypted_text)
 
