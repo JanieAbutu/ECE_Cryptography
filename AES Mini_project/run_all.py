@@ -45,16 +45,23 @@ def parse_input(user_input):
     # If not numeric, treat as text
     return text_to_bytes(user_input)
 
+def bytes_to_hex(byte_list):
+    """Convert list of bytes to hex string"""
+    return ''.join(f"{b:02x}" for b in byte_list)
+
 # ------------------------------
 # Main
 # ------------------------------
 
 if __name__ == "__main__":
-    print("=== AES Mini-Project ===")
+    print("=== AES Mini-Project that Encrpts, Decrypts, and Avalanche Test when a bit is yesmodified ===")
 
     # User input
     plaintext_input = input("Enter plaintext (text or 16-bit numbers 0-255, space-separated): ")
     password_input = input("Enter key/password (text or numbers 0-255, space-separated): ")
+
+    print("\nStarting Encryption...")
+    print("Converting to bytes...")
 
     # Convert to bytes
     plaintext_bytes = parse_input(plaintext_input)
@@ -66,13 +73,31 @@ if __name__ == "__main__":
         key_bytes = password_to_aes_key(password_input)
 
     # Generate round keys
+    print("Generating round keys...")
     round_keys = key_expansion(key_bytes)
+
+    print("Encrypting all blocks...")
 
     # Encrypt all blocks
     ciphertext = []
     for i in range(0, len(padded_plaintext), 16):
         block = padded_plaintext[i:i+16]
         ciphertext.extend(aes_encrypt_block(block, round_keys))
+
+    print("--- Encrypting completed ---")
+
+    # Display Encryption output
+    print("\nENCRYPTION OUTPUT:")
+    #print("Original Plaintext: ", plaintext_input)
+    print("    Ciphertext (bytes): ", ciphertext)
+    print("    Ciphertext (hex):   ", bytes_to_hex(ciphertext))
+
+    
+    # Pause before decryption
+    input("\nPress Enter to start decryption...")
+
+    print("Starting Decryption...")
+
 
     # Decrypt all blocks
     decrypted_bytes = []
@@ -87,14 +112,18 @@ if __name__ == "__main__":
     except UnicodeDecodeError:
         decrypted_text = str(decrypted_bytes)  # fallback to byte list
 
-    # Display results
-    print("\nOriginal Plaintext: ", plaintext_input)
-    print("Ciphertext (bytes): ", ciphertext)
-    print("Decrypted Text:     ", decrypted_text)
+    
+    print("--- Decryption Completed ---")
+    print("\nDECRYPTION OUTPUT:")
+    print("    Decrypted Text:     ", decrypted_text)
+
+    print("    Original Plaintext for comparison: ", plaintext_input)
 
         # ------------------------------
     # Avalanche test per block (detailed)
     # ------------------------------
+    input("\nPress Enter to start avalanche test...")
+    print("STARTING AVALANCHE TEST...")
     print("\n=== Detailed Avalanche Test per 16-byte block ===")
     for i in range(0, len(padded_plaintext), 16):
         block = padded_plaintext[i:i+16]
@@ -105,10 +134,12 @@ if __name__ == "__main__":
         
         distance = hamming_distance(cipher_original, cipher_modified)
         
-        print(f"\nBlock {i//16 + 1}:")
-        print(" Original Block:       ", block)
-        print(" Modified Block:       ", modified_block)
-        print(" Ciphertext Original:  ", cipher_original)
-        print(" Ciphertext Modified:  ", cipher_modified)
-        print(" Hamming Distance:     ", distance)
+        print(f"Block {i//16 + 1}:")
+        print("  Original Block:       ", block)
+        print("  Modified Block:       ", modified_block)
+        print("  Ciphertext Original:  ", cipher_original)
+        print("  Ciphertext Original (hex):", bytes_to_hex(cipher_original))
+        print("  Ciphertext Modified:  ", cipher_modified)
+        print("  Ciphertext Modified (hex):", bytes_to_hex(cipher_modified))
+        print("  Hamming Distance:     ", distance)
    
