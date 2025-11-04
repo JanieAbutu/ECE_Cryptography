@@ -172,4 +172,32 @@ if __name__ == "__main__":
         print("  Ciphertext Modified:  ", cipher_modified)
         print("  Ciphertext Modified (hex):", bytes_to_hex(cipher_modified))
         print("  Hamming Distance:     ", distance)
-   
+
+    
+    # ------------------------------
+    # Key sensitivity test
+    # ------------------------------
+    input("\nPress Enter to start key sensitivity test...")
+
+    print("\n=== KEY SENSITIVITY TEST ===")
+
+    # Flip one bit in the key (e.g., last byte)
+    modified_key = key_bytes.copy()
+    modified_key[-1] ^= 0x01  # flip last bit of the last key byte
+
+    # Generate round keys for modified key
+    round_keys_modified = key_expansion(modified_key)
+
+    # Encrypt the same plaintext block with both keys
+    original_cipher = aes_encrypt_block(padded_plaintext[:16], round_keys)
+    modified_cipher = aes_encrypt_block(padded_plaintext[:16], round_keys_modified)
+
+    distance_key = hamming_distance(original_cipher, modified_cipher)
+
+    print("Original Key:       ", key_bytes)
+    print("Modified Key:       ", modified_key)
+    print("Ciphertext Original:", original_cipher)
+    print("Ciphertext Modified:", modified_cipher)
+    print("Hamming Distance (key change):", distance_key)
+
+    
