@@ -1,1 +1,14 @@
+# AES Mini-Project
+
+This project implements AES-128 encryption and decryption in Python, including:
+- SubBytes, ShiftRows, MixColumns, AddRoundKey transformations
+- Key expansion
+- Avalanche effect experiments
+- Formatted report generation
+
+## Usage
+Run `run_all.py` in Python 3.9+:
+
+```bash
+python run_all.py
 
