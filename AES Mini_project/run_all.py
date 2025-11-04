@@ -1,46 +1,101 @@
 import sys
 import os
+import hashlib
+
 sys.path.append(os.path.dirname(__file__))
 
 from aes_utils import key_expansion, hamming_distance
 from aes import aes_encrypt_block, aes_decrypt_block
 
+# ------------------------------
+# Helper functions
+# ------------------------------
+
+def pkcs7_pad(block):
+    """Pad a byte array to 16 bytes using PKCS#7 style padding"""
+    pad_len = 16 - len(block) % 16
+    return block + [pad_len] * pad_len
+
+def pkcs7_unpad(block):
+    """Remove PKCS#7 padding"""
+    pad_len = block[-1]
+    return block[:-pad_len]
+
+def text_to_bytes(text):
+    """Convert string to list of byte values"""
+    return [b for b in text.encode('utf-8')]
+
+def password_to_aes_key(password):
+    """Derive 16-byte AES key from any-length password"""
+    hash_bytes = hashlib.sha256(password.encode('utf-8')).digest()
+    return list(hash_bytes[:16])
+
+def parse_input(user_input):
+    """
+    Determine if input is numeric (space-separated 0-255) or text.
+    Returns list of bytes.
+    """
+    try:
+        # Attempt to parse as integers
+        nums = [int(x) for x in user_input.strip().split()]
+        if all(0 <= n <= 255 for n in nums):
+            return nums
+    except ValueError:
+        pass
+    # If not numeric, treat as text
+    return text_to_bytes(user_input)
+
+# ------------------------------
+# Main
+# ------------------------------
+
 if __name__ == "__main__":
     print("=== AES Mini-Project ===")
 
-    # Dynamic user input for plaintext and key
+    # User input
+    plaintext_input = input("Enter plaintext (text or 16-bit numbers 0-255, space-separated): ")
+    password_input = input("Enter key/password (text or numbers 0-255, space-separated): ")
+
+    # Convert to bytes
+    plaintext_bytes = parse_input(plaintext_input)
+    padded_plaintext = pkcs7_pad(plaintext_bytes)
+
+    key_bytes = parse_input(password_input)
+    # Ensure key_bytes is exactly 16 bytes for AES-128
+    if len(key_bytes) != 16:
+        key_bytes = password_to_aes_key(password_input)
+
+    # Generate round keys
+    round_keys = key_expansion(key_bytes)
+
+    # Encrypt all blocks
+    ciphertext = []
+    for i in range(0, len(padded_plaintext), 16):
+        block = padded_plaintext[i:i+16]
+        ciphertext.extend(aes_encrypt_block(block, round_keys))
+
+    # Decrypt all blocks
+    decrypted_bytes = []
+    for i in range(0, len(ciphertext), 16):
+        block = ciphertext[i:i+16]
+        decrypted_bytes.extend(aes_decrypt_block(block, round_keys))
+
+    # Remove padding
+    decrypted_bytes = pkcs7_unpad(decrypted_bytes)
     try:
-        plaintext = [int(x) for x in input("Enter 16-byte plaintext (0-255, space separated): ").split()]
-        key = [int(x) for x in input("Enter 16-byte key (0-255, space separated): ").split()]
-    except ValueError:
-        print("Error: Please enter only integers between 0 and 255.")
-        exit(1)
-
-    if len(plaintext) != 16 or len(key) != 16:
-        print("Error: Plaintext and key must be exactly 16 bytes each.")
-        exit(1)
-
-    # Key expansion
-    round_keys = key_expansion(key)
-
-    # Encrypt and decrypt
-    ciphertext = aes_encrypt_block(plaintext, round_keys)
-    decrypted = aes_decrypt_block(ciphertext, round_keys)
+        decrypted_text = bytes(decrypted_bytes).decode('utf-8')
+    except UnicodeDecodeError:
+        decrypted_text = str(decrypted_bytes)  # fallback to byte list
 
     # Display results
-    print("\nOriginal Plaintext: ", plaintext)
-    print("Ciphertext:         ", ciphertext)
-    print("Decrypted Text:     ", decrypted)
+    print("\nOriginal Plaintext: ", plaintext_input)
+    print("Ciphertext (bytes): ", ciphertext)
+    print("Decrypted Text:     ", decrypted_text)
 
-    # Avalanche Test: flip 1 bit in plaintext
-    modified_plain = plaintext[:15] + [plaintext[15] ^ 0x01]
-    cipher_mod_plain = aes_encrypt_block(modified_plain, round_keys)
-    print("\nHamming distance (1 bit flipped in plaintext):",
-          hamming_distance(ciphertext, cipher_mod_plain))
-
-    # Avalanche Test: flip 1 bit in key
-    modified_key = key[:15] + [key[15] ^ 0x01]
-    round_keys_mod = key_expansion(modified_key)
-    cipher_mod_key = aes_encrypt_block(plaintext, round_keys_mod)
-    print("Hamming distance (1 bit flipped in key):      ",
-          hamming_distance(ciphertext, cipher_mod_key))
+    # Avalanche test for all blocks
+    print("\n=== Avalanche Test per 16-byte block ===")
+    for i in range(0, len(padded_plaintext), 16):
+        block = padded_plaintext[i:i+16]
+        modified_block = block[:15] + [block[15] ^ 0x01]
+        cipher_mod = aes_encrypt_block(modified_block, round_keys)
+        print(f"Block {i//16 + 1} Hamming distance: {hamming_distance(ciphertext[i:i+16], cipher_mod)}")
