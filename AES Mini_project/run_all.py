@@ -154,7 +154,7 @@ if __name__ == "__main__":
     # ------------------------------
     input("\nPress Enter to start avalanche test...")
     print("STARTING AVALANCHE TEST...")
-    print("\n=== Detailed Avalanche Test per 16-byte block ===")
+    print("\n=== Detailed Avalanche Test for message sensitivity per 16-byte block ===")
     for i in range(0, len(padded_plaintext), 16):
         block = padded_plaintext[i:i+16]
         modified_block = block[:15] + [block[15] ^ 0x01]  # flip last bit of last byte
