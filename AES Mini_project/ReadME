@@ -5,9 +5,20 @@ This project implements AES-128 encryption and decryption in Python, including:
 - Key expansion
 - Avalanche effect experiments
 
-## Usage
-Run `run_all.py` in Python 3.9+:
+## Project Structure
+- `aes_core.py`: Core AES transformations (SubBytes, ShiftRows, MixColumns, AddRoundKey)
+- `aes_utils.py`: Key expansion, helper math functions (e.g., GF multiplication)
+- `aes_encrypt_dcrypt.py`: contains the main AES encryption and decryption functions that combine all core steps to process 16-byte data blocks using the generated round keys.
+- `run_all.py`: Main script to run everything -AES encryption/decryption and tests
 
-```bash
-python run_all.py
+
+## Requirements
+- Python 3.8+
+- No external dependencies (uses only built-in Python libraries)
+
+## How to Run
+1. Open a terminal in this folder.
+2. Run the main script:
+   ```bash
+   python run_all.py
 
