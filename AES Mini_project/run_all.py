@@ -54,18 +54,24 @@ def bytes_to_hex(byte_list):
 # ------------------------------
 
 if __name__ == "__main__":
-    print("=== AES Mini-Project that Encrpts, Decrypts, and Avalanche Test when a bit is yesmodified ===")
+    print("=== AES Mini-Project that Encrpts, Decrypts, and Avalanche Test when a bit of message and key is modified ===")
 
     # User input
     plaintext_input = input("Enter plaintext (text or 16-bit numbers 0-255, space-separated): ")
     password_input = input("Enter key/password (text or numbers 0-255, space-separated): ")
-
+    
     print("\nStarting Encryption...")
     print("Converting to bytes...")
 
     # Convert to bytes
     plaintext_bytes = parse_input(plaintext_input)
     padded_plaintext = pkcs7_pad(plaintext_bytes)
+
+    #Display plaintext blocks (actual input to AES)
+    print("\nPlaintext Blocks (before encryption):")
+    for i in range(0, len(padded_plaintext), 16):
+        block = padded_plaintext[i:i+16]
+        print(f"   Block {i//16 + 1} (bytes): {block}")
 
     key_bytes = parse_input(password_input)
     # Ensure key_bytes is exactly 16 bytes for AES-128
@@ -115,18 +121,18 @@ if __name__ == "__main__":
     # ------------------------------
     # Decrypt block by block
     # ------------------------------
-    #decrypted_bytes = []
-    #for blk in ciphertext_blocks:
-      #  decrypted_bytes.extend(aes_decrypt_block(blk, round_keys))
+    decrypted_bytes = []
+    for blk in ciphertext_blocks:
+       decrypted_bytes.extend(aes_decrypt_block(blk, round_keys))
 
-    # Remove padding
-    #decrypted_bytes = pkcs7_unpad(decrypted_bytes)
-    #try:
-     #   decrypted_text = bytes(decrypted_bytes).decode('utf-8')
-    #except UnicodeDecodeError:
-     #   decrypted_text = str(decrypted_bytes)
+    #Remove padding
+    decrypted_bytes = pkcs7_unpad(decrypted_bytes)
+    try:
+       decrypted_text = bytes(decrypted_bytes).decode('utf-8')
+    except UnicodeDecodeError:
+       decrypted_text = str(decrypted_bytes)
 
-    #print("\nDecrypted Text: ", decrypted_text)
+    print("\nDecrypted Text: ", decrypted_text)
 
 
     # Decrypt all blocks at once

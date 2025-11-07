@@ -2,7 +2,8 @@
 # AES Core Transformations
 # ----------------------
 
-# AES S-box and Inverse S-box
+# AES S-box and Inverse S-box lookup table are used for the SubBytes and InvSubBytes steps.
+# Each byte is substituted using the S-box to increase nonlinearity (confusion).
 s_box = [
     0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0xd7,0xab,0x76,
     0xca,0x82,0xc9,0x7d,0xfa,0x59,0x47,0xf0,0xad,0xd4,0xa2,0xaf,0x9c,0xa4,0x72,0xc0,
@@ -21,7 +22,7 @@ s_box = [
     0xe1,0xf8,0x98,0x11,0x69,0xd9,0x8e,0x94,0x9b,0x1e,0x87,0xe9,0xce,0x55,0x28,0xdf,
     0x8c,0xa1,0x89,0x0d,0xbf,0xe6,0x42,0x68,0x41,0x99,0x2d,0x0f,0xb0,0x54,0xbb,0x16
 ]
-
+# Inverse S-box lookup tables
 inv_s_box = [
     0x52,0x09,0x6a,0xd5,0x30,0x36,0xa5,0x38,0xbf,0x40,0xa3,0x9e,0x81,0xf3,0xd7,0xfb,
     0x7c,0xe3,0x39,0x82,0x9b,0x2f,0xff,0x87,0x34,0x8e,0x43,0x44,0xc4,0xde,0xe9,0xcb,
@@ -44,24 +45,31 @@ inv_s_box = [
 # ----------------------
 # AES Transformations
 # ----------------------
+# Byte substitution using the AES S-box. Replaces each byte with its corresponding value from S-box
 def sub_bytes(state):
     return [[s_box[b] for b in row] for row in state]
 
+# Inverse byte substitution using the inverse S-box. Reverses SubBytes step during decryption
 def inv_sub_bytes(state):
     return [[inv_s_box[b] for b in row] for row in state]
 
+# Row shifting transformation -  Each row of the state is cyclically shifted left by its row index
 def shift_rows(state):
     return [state[r][r:] + state[r][:r] for r in range(4)]
 
+# Inverse of ShiftRows (used in decryption) - Each row is shifted right by its row index to reverse ShiftRows
 def inv_shift_rows(state):
     return [state[r][-r:] + state[r][:-r] for r in range(4)]
 
+# XORs the state with the round key- Combines state matrix with round key using XOR
 def add_round_key(state, round_key):
     return [[state[r][c] ^ round_key[r][c] for c in range(4)] for r in range(4)]
 
+# Helper function for MixColumns: multiply by x (i.e., 2) in GF(2⁸) - Left shift by 1 and reduce with 0x1b if overflow occurs (for modular arithmetic)
 def xtime(a):
     return ((a << 1) ^ 0x1b) & 0xff if (a & 0x80) else a << 1
 
+# MixColumns on a single column - Performs byte mixing for one column using polynomial multiplication
 def mix_single_column(a):
     t = a[0] ^ a[1] ^ a[2] ^ a[3]
     u = a[0]
@@ -71,6 +79,7 @@ def mix_single_column(a):
     a[3] ^= t ^ xtime(a[3] ^ u)
     return a
 
+# MixColumns transformation (applied to all columns) -  Ensures diffusion by mixing bytes in each column
 def mix_columns(state):
     for i in range(4):
         col = [state[r][i] for r in range(4)]
@@ -79,7 +88,9 @@ def mix_columns(state):
             state[r][i] = col[r]
     return state
 
-def mul(a, b):
+#performs multiplication in the finite field multiplication (GF(2⁸)) required for MixColumns transformations using repeated shifts, XORs, and modular reduction
+# Multiplies two numbers in GF(2⁸) using bitwise operations and modular reduction
+def mul(a, b):  
     p = 0
     for i in range(8):
         if b & 1: p ^= a
@@ -89,7 +100,9 @@ def mul(a, b):
         b >>= 1
     return p
 
-def inv_mix_columns(state):
+# Inverse MixColumns transformation (used during decryption)
+#reverses the MixColumns step during decryption, specific multiplications and XORs
+def inv_mix_columns(state): 
     for i in range(4):
         s0, s1, s2, s3 = [state[r][i] for r in range(4)]
         state[0][i] = mul(s0, 0x0e) ^ mul(s1, 0x0b) ^ mul(s2, 0x0d) ^ mul(s3, 0x09)
@@ -97,3 +110,5 @@ def inv_mix_columns(state):
         state[2][i] = mul(s0, 0x0d) ^ mul(s1, 0x09) ^ mul(s2, 0x0e) ^ mul(s3, 0x0b)
         state[3][i] = mul(s0, 0x0b) ^ mul(s1, 0x0d) ^ mul(s2, 0x09) ^ mul(s3, 0x0e)
     return state
+
+
