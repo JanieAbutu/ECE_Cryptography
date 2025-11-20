@@ -1,0 +1,20 @@
+# Educational ECC ElGamal Demo (toy curve)
+
+This small project demonstrates ElGamal encryption on a tiny elliptic curve
+over F_89 for pedagogical purposes. **Do not** use this code for real security.
+
+## Files
+- `domain_params.py` — curve parameters and points
+- `ec_curve.py` — EC arithmetic and Tonelli–Shanks
+- `ec_encoding.py` — simple deterministic integer→point encoder
+- `elgamal.py` — encrypt/decrypt logic
+- `main.py` — end-to-end demo (encode, encrypt, brute-force private key, decrypt)
+
+## Run
+
+
+## Notes
+- The encoding method in `ec_encoding.py` is simple and deterministic for learning.
+- `find_private.py` demonstrates small-scale discrete log brute-forcing — only feasible on tiny curves.
+- The path `uploaded_image_path` points to a file in the session: `/mnt/data/a037bbf1-9062-4d94-bfc8-7c083954bd86.png`.
+  This is included only for convenience if you want to reference the image inside the demo or documentation.
