@@ -1,0 +1,90 @@
+<!-- app/templates/index.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>ECDSA Banking Simulator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; max-width: 980px; }
+    .box { border: 1px solid #ddd; padding: 12px; margin-bottom: 12px; border-radius:6px; }
+    textarea { width: 100%; height: 80px; }
+    input[type=text] { width: 100%; }
+    pre { background:#f7f7f7; padding:8px; border-radius:4px; overflow:auto; }
+    .small { font-size:0.9em; color:#666; }
+  </style>
+</head>
+<body>
+  <h1>Secure Banking Transaction — ECDSA (Demo)</h1>
+
+  <div class="box">
+    <h3>Server public key (demo)</h3>
+    <pre>{{ public_key }}</pre>
+  </div>
+
+  <div class="box">
+    <h3>Sign / Verify</h3>
+    <form action="{{ url_for('sign') }}" method="post">
+      <label>Message to sign:</label><br/>
+      <textarea name="message">Alice -> Bob : 100€</textarea><br/>
+      <button type="submit">Sign (RFC6979)</button>
+    </form>
+
+    <form action="{{ url_for('verify') }}" method="post" style="margin-top:8px;">
+      <label>Message to verify:</label>
+      <input type="text" name="message" placeholder="message"/>
+      <label>r:</label><input type="text" name="r"/>
+      <label>s:</label><input type="text" name="s"/>
+      <button type="submit">Verify</button>
+    </form>
+  </div>
+
+  <div class="box">
+    <h3>Encrypt / Decrypt (ElGamal demo)</h3>
+    <form action="{{ url_for('encrypt') }}" method="post">
+      <label>Message to encrypt:</label>
+      <input type="text" name="message_encrypt" value="Alice->Bob:100€"/>
+      <button type="submit">Encrypt</button>
+    </form>
+
+    <form action="{{ url_for('decrypt') }}" method="post" style="margin-top:8px;">
+      <label>C1.x:</label><input type="text" name="c1x"/>
+      <label>C1.y:</label><input type="text" name="c1y"/>
+      <label>C2.x:</label><input type="text" name="c2x"/>
+      <label>C2.y:</label><input type="text" name="c2y"/>
+      <button type="submit">Decrypt</button>
+      <div class="small">(Paste ciphertext coordinates from the encrypt result.)</div>
+    </form>
+  </div>
+
+  <div class="box">
+    <h3>Attack demo — nonce reuse (simulated)</h3>
+    <form action="{{ url_for('attack') }}" method="post">
+      <label>Message 1:</label><input type="text" name="attack_m1" value="Alice->Bob:100"/>
+      <label>Message 2:</label><input type="text" name="attack_m2" value="Alice->Charlie:200"/>
+      <button type="submit">Run k-reuse demo</button>
+    </form>
+    <div class="small">This simulates a vulnerable signer that reuses a nonce and recovers the private key.</div>
+  </div>
+
+  {% if result %}
+    <div class="box">
+      <h3>Result</h3>
+      <pre>{{ result | safe }}</pre>
+    </div>
+  {% endif %}
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="box">
+        <h3>Messages</h3>
+        <ul>
+        {% for m in messages %}
+          <li>{{ m }}</li>
+        {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  {% endwith %}
+
+</body>
+</html>
