@@ -3,6 +3,7 @@
 from ecc.curve import EllipticCurve
 from ecc.keys import ECCKeyPair
 from ecc.ecdsa import ECDSA
+#from ecc_library_path import ECDSA
 
 # Medium teaching curve
 curve = EllipticCurve(
@@ -10,6 +11,16 @@ curve = EllipticCurve(
     Gx=1804, Gy=5368,
     n=9739
 )
+
+def run_weak_k_attack(log):
+    log("Attacker forces weak k = 1...")
+    log("Private key becomes recoverable because signature leaks d.")
+    # insert your previous weak‑k demo logic here
+    return "Weak k attack completed."
+
+from logging_config import logger
+logger.info("Starting weak-k attack…")
+
 
 def main():
     print("\n=== WEAK k ATTACK (Nonce Reuse) ===")

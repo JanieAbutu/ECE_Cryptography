@@ -7,5 +7,5 @@ setup(
         "flask"
     ],
     description="Educational ECC/ECDSA/ElGamal demo package",
-    author="You",
+    author="Ofunneka Jennifer Okonkwoabutu",
 )

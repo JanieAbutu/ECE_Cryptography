@@ -1,0 +1,64 @@
+docker build -t ecdsa-backend .
+docker run -p 8000:8000 ecdsa-backend
+
+
+### How to use logging config inside your attack scripts
+from logging_config import logger
+
+logger.info("Starting replay attack simulation…")
+
+
+######
+
+⭐ F. Connecting the React UI
+
+Inside your Web UI button:
+    await fetch("http://localhost:8000/attack/weak-k");
+
+For logs (WebSocket):
+    const ws = new WebSocket("ws://localhost:8000/ws/logs");
+    ws.onmessage = (e) => setLogs(prev => [...prev, e.data]);
+
+
+####
+✅ 3. FULL BACKEND (FastAPI) + ROUTES + WEBSOCKETS + DOCKER
+
+backend/
+  main.py
+  logging_config.py
+  attacks/
+      replay.py
+      weak_k.py
+      forgery.py
+      mitm.py
+      malleability.py
+  requirements.txt
+  Dockerfile
+
+
+###
+Inside webUI, buttons like:
+
+    Run Replay Attack
+    Run Weak‑k Attack
+    Run Signature Forgery
+    Run MITM Attack
+    Run Malleability Attack
+
+But they don’t do anything until they call a backend.
+
+➡ Meaning:
+You must add a backend API that the buttons talk to.
+
+Where logs go
+✔ To console
+✔ To logs/attack_simulation.log
+✔ To the web UI (when we wire WebSocket)
+
+
+which is the api routes for each attack?
+
+### web-ui
+Run with:
+    npm install
+    npm run dev
