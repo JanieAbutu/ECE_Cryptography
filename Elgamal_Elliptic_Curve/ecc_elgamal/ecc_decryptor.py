@@ -4,7 +4,8 @@ from ecc_encoder import ec_add, ec_neg, ec_scalar_mul
 def decrypt_message(cipher, r, a, p, dB):
     def decode_point_with_offset(x, offset):
         num = (x - offset) % p
-        return chr((num % 26) + 65)
+        return chr((num % 26)+65)
+        
 
     S = ec_scalar_mul(dB, r, a, p)
     decrypted_message = ""
