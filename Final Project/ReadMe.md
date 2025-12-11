@@ -74,7 +74,7 @@ In the vulnerable system, specific steps are intentionally skipped or weakened t
 **Features**
 - Fully Interactive CLI**
 - Users can:
-- - 1; Create accounts
+- - 1. Create accounts
 - - 2. View balances
 - - 3. Make signed transfers
 - - 4. Show ledger
@@ -108,7 +108,7 @@ Digital signatures bind the message contents to the signer. Skipping verificatio
 **-Result:**
 Unauthorized balance modifications while preserving a valid‑looking signature record.
 
-**6.3 Signature Forgery**
+**7.3 Signature Forgery**
 **- Why:**
 A system that does not validate signatures cannot distinguish legitimate users from attackers.
 **- How:**
@@ -117,7 +117,7 @@ A system that does not validate signatures cannot distinguish legitimate users f
 **- Result:**
 Full authentication bypass with arbitrary fund transfers.
 
-**6.4 Replay Attack**
+**7.4 Replay Attack**
 **- Why:**
 Signed transactions remain valid unless uniqueness or freshness is enforced.
 **- How:**
@@ -135,7 +135,7 @@ The attack demos show:
 - How replay attacks bypass naive verifiers
 - Differences between secure and insecure ECDSA 
 
-## 7. Security Mitigations Demonstrated
+## 8. Security Mitigations Demonstrated
 *- The project also illustrates practical defenses, including:**
 - - Mandatory signature verification
 - - Replay detection via signature tracking
@@ -145,7 +145,7 @@ The attack demos show:
 These mitigations reinforce industry best practices.
 
 
-## 8. Installation
+## 9. Installation
 **Requirements**
 - - Python 3.10 or newer
 - - No external dependencies required
@@ -192,7 +192,7 @@ These mitigations reinforce industry best practices.
 - - Post-attack balances
 
  
-## 9. Key Insights and Lessons Learned
+## 10. Key Insights and Lessons Learned
 - How ECDSA signing mathematically works
 - Cryptographic algorithms are only secure when used correctly
 - ECDSA nonce misuse leads to immediate key compromise
@@ -203,7 +203,7 @@ These mitigations reinforce industry best practices.
 #*Future Implementation:*
 1. Deterministic nonces (RFC 6979)
 
-## 10. Conclusion
+## 11. Conclusion
 
 This project demonstrates that most real‑world cryptographic failures arise from implementation and protocol errors, not algorithmic weaknesses. By constructing vulnerable systems alongside secure counterparts, the work provides a practical and educational exploration of how cryptography fails — and how it must be correctly applied to succeed.
 
