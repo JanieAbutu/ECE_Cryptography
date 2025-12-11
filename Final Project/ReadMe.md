@@ -151,10 +151,12 @@ These mitigations reinforce industry best practices.
 - - No external dependencies required
 - - Run the project:
 
-# For transaction simulation
-**python main.py**   
+# For transaction simulation, run:
+
+**python main.py** 
+
 **-You will see an interactive menu.**           
-**- Example Output**                  
+*- Example Output*               
 - 1. Create account
 - 2. Show accounts
 - 3. Transfer money
@@ -167,8 +169,19 @@ These mitigations reinforce industry best practices.
 - - Account 'alice' created.
 - - Public key: (...)
 
-# For attack simulation demo
-**python interactive_demo.py**     
+# For attack simulation demo, run: 
+
+**python interactive_demo.py**  
+
+**-You will see an interactive menu.** 
+*- Choose a demo:*
+- 1) Nonce-reuse attack (math + takeover)
+- 2) Man-in-the-middle (MITM) attack
+- 3) Signature forgery
+- 4) Replay attack
+- 5) Auto-play all demos (fast)
+- 0) Exit
+
 **Each attack prints:**
 - - Private and public keys
 - - Message hash z
@@ -186,6 +199,9 @@ These mitigations reinforce industry best practices.
 - Skipping verification is equivalent to having no cryptography at all
 - Replay attacks highlight the importance of transaction uniqueness
 - Defense‑in‑depth is essential in financial and distributed systems
+
+#*Future Implementation:*
+1. Deterministic nonces (RFC 6979)
 
 ## 10. Conclusion
 
