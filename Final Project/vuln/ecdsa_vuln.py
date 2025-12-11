@@ -1,5 +1,9 @@
 # vuln/ecdsa_vuln.py
 
+#################################################################
+# intentional ecdsa signing logic
+##################################################################
+
 import random
 import hashlib
 

@@ -11,7 +11,7 @@ This project was developed for an advanced cryptography course to see, understan
 - Differences between secure and insecure ECDSA
 
 **Project Structure:**
- Final Project/
+Final Project/
 |--- curve.py                 # Elliptic curve operations (add, multiply, G, n)
 |--- ecdsa.py                 # ECDSA implementation
 |--- transaction.py           # Banking system
@@ -67,31 +67,31 @@ Users can:
 - Bank processes it again
 - Balance decreases twice
 - Demonstrates the need for:
-+ nonces
-+ sequence numbers
-+ live session tokens
+   + nonces
+   + sequence numbers
+   + live session tokens
 
 ##Installation
 **Requirements**
 - Python 3.10 or newer
 - No external dependencies required
 - Run the project:
-   **python main.py**                   # For transaction simulation
-   **Example Output**                   # You will see an interactive menu.
-    1. Create account
-    2. Show accounts
-    3. Transfer money
-    4. Show ledger
-    5. Verify ledger transaction
-    0. Exit
+**python main.py**                   # For transaction simulation
+**Example Output**                   # You will see an interactive menu.
+   1. Create account
+   2. Show accounts
+   3. Transfer money
+   4. Show ledger
+   5. Verify ledger transaction
+   0. Exit
 
-    Name: alice       # Enter name
-    Balance: 800      # Enter balance
-    Account 'alice' created.
-    Public key: (...)
+   Name: alice       # Enter name
+   Balance: 800      # Enter balance
+   Account 'alice' created.
+   Public key: (...)
 
-   **python interactive_demo.py**      # For attack simulation demo
-   **Each attack prints:**
+**python interactive_demo.py**      # For attack simulation demo
+**Each attack prints:**
    - Private and public keys
    - Message hash z
    - Nonce k
