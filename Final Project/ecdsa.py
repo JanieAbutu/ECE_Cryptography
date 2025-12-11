@@ -1,4 +1,7 @@
 # ecdsa.py
+##############################################################
+# ECDSA implementation
+###############################################################
 import secrets
 from hashlib import sha256
 from curve import G, n, add, multiply
