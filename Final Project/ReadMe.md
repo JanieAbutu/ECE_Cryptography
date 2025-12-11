@@ -1,5 +1,5 @@
 
-### Project: Securing Banking Transactions Using ECDSA
+# Project: Securing Banking Transactions Using ECDSA
 
 The project focuses on hands‑on exploitation, showing how incorrect integration of cryptography — not weak algorithms — leads to severe security breaches. The work emphasizes why cryptographic correctness alone is insufficient without proper protocol enforcement.
 
@@ -81,7 +81,7 @@ In the vulnerable system, specific steps are intentionally skipped or weakened t
 - - 5. Verify ledger signatures
 
 ## 7. Implemented Attacks and Demonstrations
-**7.1 Nonce‑Reuse Attack**
+### 7.1 Nonce‑Reuse Attack
 **- Why:**
 - - ECDSA security critically depends on generating a fresh random nonce (k) for each signature.
 
@@ -97,7 +97,7 @@ Complete private key compromise, enabling account takeover and transaction forge
 **- Attack Simulation**
 **A. Nonce-Reuse Attack (Private Key Extraction)**
 
-**7.2 Man‑in‑the‑Middle (MITM) Message Tampering**
+### 7.2 Man‑in‑the‑Middle (MITM) Message Tampering
 **- Why:**
 Digital signatures bind the message contents to the signer. Skipping verification breaks this guarantee.
 
@@ -108,7 +108,7 @@ Digital signatures bind the message contents to the signer. Skipping verificatio
 **-Result:**
 Unauthorized balance modifications while preserving a valid‑looking signature record.
 
-**7.3 Signature Forgery**
+### 7.3 Signature Forgery**
 **- Why:**
 A system that does not validate signatures cannot distinguish legitimate users from attackers.
 **- How:**
@@ -117,7 +117,7 @@ A system that does not validate signatures cannot distinguish legitimate users f
 **- Result:**
 Full authentication bypass with arbitrary fund transfers.
 
-**7.4 Replay Attack**
+###  7.4 Replay Attack**
 **- Why:**
 Signed transactions remain valid unless uniqueness or freshness is enforced.
 **- How:**
@@ -169,7 +169,7 @@ These mitigations reinforce industry best practices.
 - - Account 'alice' created.
 - - Public key: (...)
 
-# For attack simulation demo, run: 
+## For attack simulation demo, run: 
 
 **python interactive_demo.py**  
 
@@ -202,6 +202,7 @@ These mitigations reinforce industry best practices.
 
 #*Future Implementation:*
 1. Deterministic nonces (RFC 6979)
+2. Other relevant updates
 
 ## 11. Conclusion
 
